@@ -8,9 +8,10 @@ Robot Framework Browser（Playwright）+ Allure 的端到端测试套件仓库�
 ```
 .
 ├── suites/                     # 一个子目录 = 一个可勾选的测试套件
-│   └── demo/
-│       ├── browser_demo.robot  # 用例（Browser 库，${CURDIR}/site 指向同目录站点）
-│       └── site/index.html     # 被测本地静态站点
+│   ├── demo/                   # 端到端演示（登录 + 待办），端口 8899
+│   ├── login/                  # 登录功能用例集（7 条），端口 8898
+│   ├── todo/                   # 待办事项用例集（5 条），端口 8897
+│   └── smoke/                  # 冒烟：不依赖浏览器，只校验环境与站点资源，端口 8896
 ├── suites.properties           # Jenkins 勾选参数 TEST_SUITES 的数据源
 ├── update-suites-properties.sh # 根据 suites/ 目录刷新上面的文件
 └── README.md
