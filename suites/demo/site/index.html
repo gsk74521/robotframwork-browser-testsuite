@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RF Browser Demo</title>
+  <style>
+    :root { color-scheme: light; }
+    body { font-family: system-ui, "Noto Sans CJK SC", sans-serif; max-width: 720px;
+           margin: 40px auto; padding: 0 20px; color: #1f2933; }
+    h1 { font-size: 24px; }
+    h2 { font-size: 18px; margin-top: 32px; }
+    form, .todo-row { display: flex; gap: 8px; margin: 12px 0; }
+    input { flex: 1; padding: 8px 10px; border: 1px solid #cbd2d9; border-radius: 6px; font-size: 14px; }
+    button { padding: 8px 16px; border: 0; border-radius: 6px; background: #2563eb; color: #fff;
+             font-size: 14px; cursor: pointer; }
+    #message { min-height: 22px; font-weight: 600; }
+    .ok { color: #157347; }
+    .err { color: #c0392b; }
+    ul { list-style: none; padding: 0; }
+    li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #eef2f6; }
+    li span { flex: 1; }
+    .done { text-decoration: line-through; color: #9aa5b1; }
+    #todo-count { color: #52606d; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>Robot Framework Browser 演示站点</h1>
+  <p>本页面由本地 HTTP 服务提供，专用于 robotframework-browser 的端到端测试演示。</p>
+
+  <h2>登录</h2>
+  <form id="login-form">
+    <input id="username" name="username" placeholder="用户名" autocomplete="off">
+    <input id="password" name="password" type="password" placeholder="密码" autocomplete="off">
+    <button id="login" type="submit">登录</button>
+  </form>
+  <p id="message"></p>
+
+  <h2>待办事项</h2>
+  <div class="todo-row">
+    <input id="todo-input" placeholder="输入待办内容" autocomplete="off">
+    <button id="add-todo" type="button">添加</button>
+  </div>
+  <ul id="todo-list"></ul>
+  <p id="todo-count">共 0 项，已完成 0 项</p>
+
+  <script>
+    const USERS = { alice: 's3cret', bob: 'hunter2' };
+
+    function setMessage(text, ok) {
+      const el = document.getElementById('message');
+      el.textContent = text;
+      el.className = ok ? 'ok' : 'err';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value;
+      if (!user || !pass) {
+        setMessage('用户名和密码不能为空', false);
+        return;
+      }
+      if (USERS[user] && USERS[user] === pass) {
+        setMessage('欢迎, ' + user, true);
+      } else {
+        setMessage('用户名或密码错误', false);
+      }
+    });
+
+    function refreshCount() {
+      const items = document.querySelectorAll('#todo-list li');
+      const done = document.querySelectorAll('#todo-list input[type=checkbox]:checked');
+      document.getElementById('todo-count').textContent =
+        '共 ' + items.length + ' 项，已完成 ' + done.length + ' 项';
+    }
+
+    document.getElementById('add-todo').addEventListener('click', function () {
+      const input = document.getElementById('todo-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const li = document.createElement('li');
+      const box = document.createElement('input');
+      box.type = 'checkbox';
+      box.addEventListener('change', refreshCount);
+      const label = document.createElement('span');
+      label.textContent = text;
+      box.addEventListener('change', function () {
+        label.className = box.checked ? 'done' : '';
+      });
+      li.appendChild(box);
+      li.appendChild(label);
+      document.getElementById('todo-list').appendChild(li);
+      input.value = '';
+      refreshCount();
+    });
+
+    refreshCount();
+  </script>
+</body>
+</html>

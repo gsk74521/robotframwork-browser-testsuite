@@ -1,0 +1,7 @@
+# 测试运行产物
+results/
+allure-results/
+allure-report/
+*.pyc
+__pycache__/
+.DS_Store
